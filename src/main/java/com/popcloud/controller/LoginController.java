@@ -65,7 +65,7 @@ public class LoginController {
                     cookie.setMaxAge(3600*24*5);
                 }
                 response.addCookie(cookie);
-                //邮件队列
+                //发邮件事件队列
                 eventProducer.fireEvent(new EventModel(EventType.LOGIN).setActorId((int) map.get("userId"))
                         .setExt("to", username).setExt("username", username));
                 return CommonUtil.getJSONString(0, "登录成功");
