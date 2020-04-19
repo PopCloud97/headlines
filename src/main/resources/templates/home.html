@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>首页</title>
+<body class="welcome_index">
+<header th:replace="header :: header"></header>
+<div id="main">
+    <div class="container" id="daily">
+        <div class="jscroll-inner">
+            <div class="daily" th:each="vo : ${vos}" th:with="news = ${vo.get('news')}, user = ${vo.get('user')}, like = ${vo.get('like')}">
+            <h3 class="date" th:if="${news.sameDate==false}">   <!--和上一个新闻不是同一天就隔开-->
+                <i class="fa icon-calendar"></i>
+                头条资讯 &nbsp;
+                <span th:text="${#calendars.format(news.createdDate,'yyyy年MM月dd日')}"></span>
+            </h3>
+                <div class="posts">
+                    <div class="post">
+
+                        <div class="votebar">
+                            <button class="click-like up pressed" th:if="${like}>0" th:attr="data-id=${news.id}" title="赞同">
+                                <i class="vote-arrow"></i><span class="count" th:text="${news.likeCount}"></span>
+                            </button>
+                            <button class="click-like up" th:unless="${like}>0" th:attr="data-id=${news.id}" title="赞同">
+                                <i class="vote-arrow"></i><span class="count" th:text="${news.likeCount}"></span>
+                            </button>
+                            <button class="click-dislike down pressed" th:if="${like}<0" th:attr="data-id=${news.id}" title="反对">
+                                <i class="vote-arrow"></i>
+                            </button>
+                            <button class="click-dislike down" th:unless="${like}<0" th:attr="data-id=${news.id}" title="反对">
+                                <i class="vote-arrow"></i>
+                            </button>
+                        </div>
+
+                        <div class="content">
+                            <div >
+                                <a target="_blank" rel="external nofollow" th:href="${news.link}">
+                                    <img class="content-img" th:src="${news.image}">
+                                </a>
+                            </div>
+                            <div class="content-main">
+                                <h3 class="title">
+                                    <a target="_blank" rel="external nofollow" th:href="${news.link}" th:text="${news.title}"></a>
+                                </h3>
+                                <div class="meta">
+                                    <a target="_blank" rel="external nofollow" th:href="${news.link}" th:text="${news.link}"></a>
+                                    <a th:href="'/news/'+${news.id}">
+                                        <span><i class="fa icon-comment"> [[${news.commentCount}]] 评论</i></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <a th:href="'/user/'+${user.id}"><img width="32" class="img-circle" th:src="${user.headUrl}"></a>
+                            </div>
+                        </div>
+
+                        <div class="subject-name">来自 <a th:href="'/user/'+${user.id}" th:text="${user.name}"></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<footer th:replace="footer :: footer"></footer>
+
+<script>
+    window.loginpop = [[${pop}]]
+</script>
+<script type="text/javascript" src="/scripts/main/site/home.js"></script>
+</html>

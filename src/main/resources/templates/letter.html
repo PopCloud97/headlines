@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>站内信</title>
+</head>
+<body>
+<header th:replace="header :: header"></header>
+
+<div id="main">
+    <div class="container">
+        <ul class="letter-list" th:each="conversationItem : ${conversations}"
+            th:with="conversation = ${conversationItem.get('conversation')}, user = ${conversationItem.get('user')},
+            unread = ${conversationItem.get('unread')}, conversationsCount = ${conversationItem.get('conversationsCount')}">
+            <li id="conversation-item-10005_622873">
+                <a class="letter-link" th:href="'/msg/detail?conversationId='+${conversation.getConversationId()}"></a>
+                <div class="letter-info">
+                    <span class="l-time" th:text="${#dates.format(conversation.getCreatedDate(),'yyyy-MM-dd HH:mm:ss')}"></span>
+                    <div class="l-operate-bar">
+                        <a th:href="@{'/msg/delconversation/' + ${conversation.getConversationId()} }" class="sns-action-del" data-id="10005_622873">
+                            删除
+                        </a>
+                        <a th:href="'/msg/detail?conversationId='+${conversation.getConversationId()}">
+                            [['共'+${conversationsCount}+'条会话']]
+                        </a>
+                    </div>
+                </div>
+                <div class="chat-headbox">
+                    <span class="msg-num">[[${unread}]]</span>
+                    <a class="list-head" th:href="'/user/'+${user.getId()}">
+                        <img width="100%" alt="头像" th:src="${user.getHeadUrl()}">
+                    </a>
+                </div>
+                <div class="letter-detail">
+                    <a th:href="'/user/'+${user.getId()}" class="letter-name level-color-1">
+                        [[${user.getName()}]]
+                    </a>
+                    <p class="letter-brief">
+                        <a th:href="'/msg/detail?conversationId='+${conversation.getConversationId()}" style="color: #555555">
+                            [[${conversation.getContent()}]]
+                        </a>
+                    </p>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+    <script type="text/javascript">
+        $(function(){
+
+            // If really is weixin
+            $(document).on('WeixinJSBridgeReady', function() {
+
+                $('.weixin-qrcode-dropdown').show();
+
+                var options = {
+                    "img_url": "",
+                    "link": "http://nowcoder.com/j/wt2rwy",
+                    "desc": "",
+                    "title": "读《Web 全栈工程师的自我修养》"
+                };
+
+                WeixinJSBridge.on('menu:share:appmessage', function (argv){
+                    WeixinJSBridge.invoke('sendAppMessage', options, function (res) {
+                        // _report('send_msg', res.err_msg)
+                    });
+                });
+
+                WeixinJSBridge.on('menu:share:timeline', function (argv) {
+                    WeixinJSBridge.invoke('shareTimeline', options, function (res) {
+                        // _report('send_msg', res.err_msg)
+                    });
+                });
+            });
+
+        })
+    </script>
+</div>
+<footer th:replace="footer :: footer"></footer>
+</body>
+</html>
